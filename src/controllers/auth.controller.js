@@ -2,13 +2,39 @@ const { registerUser, loginUser } = require('../services/auth.service');
 
 const register = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const {
+      name,
+      email,
+      password,
+      zipCode,
+      street,
+      streetNumber,
+      neighborhood,
+      city,
+      state,
+      cardHolderName,
+      cardNumber,
+      cardExpiry,
+    } = req.body;
 
     if (!name) {
       return res.status(400).json({ message: 'Nome e obrigatorio' });
     }
 
-    const user = await registerUser({ name, email, password });
+    const user = await registerUser({
+      name,
+      email,
+      password,
+      zipCode,
+      street,
+      streetNumber,
+      neighborhood,
+      city,
+      state,
+      cardHolderName,
+      cardNumber,
+      cardExpiry,
+    });
 
     res.status(201).json({
       message: 'Usuario criado com sucesso',
