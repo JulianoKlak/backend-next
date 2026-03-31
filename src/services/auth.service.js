@@ -123,7 +123,42 @@ const loginUser = async ({ email, password }) => {
   };
 };
 
+const changePasswordUser = async ({ userId, currentPassword, newPassword }) => {
+  if (!currentPassword || !newPassword) {
+    const error = new Error('Senha atual e nova senha sao obrigatorias');
+    error.statusCode = 400;
+    throw error;
+  }
+
+  if (newPassword.length < 6) {
+    const error = new Error('A nova senha deve ter pelo menos 6 caracteres');
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const [rows] = await pool.execute('SELECT * FROM users WHERE id = ?', [userId]);
+  const user = rows[0];
+
+  if (!user) {
+    const error = new Error('Usuario nao encontrado');
+    error.statusCode = 404;
+    throw error;
+  }
+
+  if (user.password !== currentPassword) {
+    const error = new Error('Senha atual invalida');
+    error.statusCode = 400;
+    throw error;
+  }
+
+  await pool.execute(
+    'UPDATE users SET password = ? WHERE id = ?',
+    [newPassword, userId]
+  );
+};
+
 module.exports = {
   registerUser,
   loginUser,
+  changePasswordUser,
 };

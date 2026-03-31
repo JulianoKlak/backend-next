@@ -1,4 +1,4 @@
-const { registerUser, loginUser } = require('../services/auth.service');
+const { registerUser, loginUser, changePasswordUser } = require('../services/auth.service');
 
 const register = async (req, res) => {
   try {
@@ -60,7 +60,22 @@ const login = async (req, res) => {
   }
 };
 
+const changePassword = async (req, res) => {
+  try {
+    await changePasswordUser({
+      userId: req.userId,
+      currentPassword: req.body.currentPassword,
+      newPassword: req.body.newPassword,
+    });
+
+    res.json({ message: 'Senha alterada com sucesso' });
+  } catch (error) {
+    res.status(error.statusCode || 500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   register,
   login,
+  changePassword,
 };
